@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cinerita Andrandes — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue:#4a7cfc; --blue-light:#e8eeff; --blue-dark:#0a1a3c;
+  --green:#1a6e3a; --green-light:#f5fff8; --green-border:#c3e8d0;
+  --bg:#f0f3fb; --card-bg:#ffffff; --text:#0a1a3c; --muted:#8892b0; --border:#e0e6f5;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+nav{position:sticky;top:0;z-index:200;background:rgba(240,243,251,0.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:56px;}
+.nav-logo{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:var(--blue);letter-spacing:.05em;cursor:pointer;}
+.nav-links{display:flex;gap:4px;list-style:none;}
+.nav-links a{font-size:12px;font-weight:500;color:var(--muted);text-decoration:none;letter-spacing:.06em;text-transform:uppercase;transition:color .2s;padding:6px 12px;border-radius:8px;}
+.nav-links a:hover,.nav-links a.active{color:var(--blue);background:var(--blue-light);}
+
+.page{display:none;min-height:calc(100vh - 56px);}
+.page.active{display:block;}
+
+.doodle-bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.doodle-bg svg{width:100%;height:100%;}
+
+.wrap{max-width:860px;margin:0 auto;padding:40px 24px 80px;position:relative;z-index:1;}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .6s ease,transform .6s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.d1{transition-delay:.1s;}.d2{transition-delay:.2s;}.d3{transition-delay:.3s;}
+
+/* HERO */
+.hero{padding:48px 0 20px;}
+.hero-name{line-height:.92;margin-bottom:18px;}
+.hero-name .first{display:block;font-size:clamp(52px,10vw,88px);font-weight:700;color:var(--blue-dark);letter-spacing:-3px;}
+.hero-name .last{display:block;font-size:clamp(52px,10vw,88px);font-weight:700;color:transparent;-webkit-text-stroke:2.5px var(--blue);letter-spacing:-3px;}
+.hero-pill{display:inline-flex;align-items:center;gap:8px;background:var(--blue-light);color:#3a5fd9;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;padding:7px 16px;border-radius:20px;margin-bottom:32px;letter-spacing:.04em;}
+.hero-pill .dot{width:6px;height:6px;border-radius:50%;background:var(--blue);}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;}
+
+/* CARDS */
+.card{background:var(--card-bg);border-radius:16px;padding:20px 22px;border:1px solid var(--border);position:relative;transition:transform .18s,box-shadow .18s;}
+.card:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(74,124,252,.12);}
+.card.clickable{cursor:pointer;}
+.card.clickable::after{content:'tap to expand ↗';font-family:'DM Mono',monospace;font-size:9px;color:var(--blue);opacity:0;position:absolute;bottom:14px;right:16px;transition:opacity .2s;}
+.card.clickable:hover::after{opacity:1;}
+.card.green{border-color:var(--green-border);background:var(--green-light);}
+.card.blue{border-color:#c5d5f8;background:#f7f9ff;}
+.card.dark{background:var(--blue-dark);border-color:var(--blue-dark);}
+.card.pink-tint{background:#fff5f8;border-color:#f4c0d1;}
+.card.amber-tint{background:#fffcf0;border-color:#fad97a;}
+.eyebrow{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}
+.card.dark .eyebrow{color:#8892b0;}
+.ctitle{font-size:15px;font-weight:600;color:var(--blue-dark);margin-bottom:4px;line-height:1.3;}
+.card.green .ctitle{color:var(--green);}
+.card.dark .ctitle{color:white;}
+.card.pink-tint .ctitle{color:#8b2252;}
+.crole{font-size:13px;color:#3c4a6e;font-weight:500;margin-bottom:3px;}
+.card.dark .crole{color:#a0aec0;}
+.csub{font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.5;}
+.card.dark .csub{color:#718096;}
+.tags{display:flex;gap:6px;flex-wrap:wrap;}
+.tag{font-size:11px;color:#4a5568;background:#f0f2f8;border:1px solid #dde2f0;border-radius:20px;padding:3px 11px;font-weight:500;}
+.card.green .tag{background:#eafaf0;border-color:#b8e8c8;color:#1a6e3a;}
+.card.dark .tag{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.15);color:#a0aec0;}
+.card.pink-tint .tag{background:#fde8f0;border-color:#f4c0d1;color:#8b2252;}
+
+/* WIDE CARD */
+.cwide{background:var(--blue-dark);border-radius:16px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px;border:1px solid var(--blue-dark);transition:transform .18s;}
+.cwide:hover{transform:translateY(-2px);}
+.cwide .ew{font-family:'DM Mono',monospace;font-size:10px;color:#718096;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;}
+.cwide .tw{font-size:18px;font-weight:700;color:white;margin-bottom:3px;}
+.cwide .sw{font-size:12px;color:#a0aec0;}
+.badge{background:var(--blue);border-radius:10px;padding:9px 18px;font-size:12px;color:white;font-weight:600;white-space:nowrap;flex-shrink:0;cursor:pointer;}
+
+/* SECTION */
+.section{margin-top:48px;}
+.sh{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.sl{font-family:'DM Mono',monospace;font-size:11px;color:var(--blue);letter-spacing:.12em;text-transform:uppercase;}
+.sline{flex:1;height:1px;background:var(--border);}
+.sn{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);}
+
+/* AWARD CARDS */
+.award-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.award-card{background:var(--card-bg);border-radius:16px;padding:20px 22px;border:1px solid var(--border);cursor:pointer;transition:transform .18s,box-shadow .18s;position:relative;overflow:hidden;}
+.award-card:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(74,124,252,.12);}
+.award-card::after{content:'view details ↗';font-family:'DM Mono',monospace;font-size:9px;color:var(--blue);opacity:0;position:absolute;bottom:14px;right:16px;transition:opacity .2s;}
+.award-card:hover::after{opacity:1;}
+.award-doodle{width:52px;height:52px;margin-bottom:12px;}
+.award-card-title{font-size:14px;font-weight:600;color:var(--blue-dark);margin-bottom:4px;line-height:1.3;}
+.award-card-sub{font-size:12px;color:var(--muted);line-height:1.5;}
+.award-card.gold{border-color:#f5d87a;background:#fffdf0;}
+.award-card.blue-t{border-color:#c5d5f8;background:#f7f9ff;}
+.award-card.green-t{border-color:var(--green-border);background:var(--green-light);}
+.award-card.pink-t{border-color:#f4c0d1;background:#fff5f8;}
+
+/* PRESS */
+.press-list{display:flex;flex-direction:column;gap:10px;}
+.press-item{background:var(--card-bg);border-radius:12px;padding:16px 20px;border:1px solid var(--border);display:flex;align-items:center;gap:16px;transition:transform .18s,box-shadow .18s;cursor:pointer;}
+.press-item:hover{transform:translateX(4px);box-shadow:0 4px 20px rgba(74,124,252,.08);}
+.pdot{width:8px;height:8px;border-radius:50%;background:var(--blue);flex-shrink:0;}
+.pbody{flex:1;}
+.ptitle{font-size:14px;font-weight:600;color:var(--blue-dark);margin-bottom:3px;}
+.pmeta{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);}
+.pdate{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);flex-shrink:0;}
+
+/* JOURNAL */
+.jitem{background:var(--card-bg);border-radius:12px;padding:18px 22px;border:1px solid var(--border);border-left:3px solid var(--blue);transition:transform .18s;margin-bottom:10px;cursor:pointer;}
+.jitem:hover{transform:translateX(4px);}
+.jtitle{font-size:14px;font-weight:600;color:var(--blue-dark);margin-bottom:5px;line-height:1.4;}
+.jauthors{font-size:12px;color:var(--muted);margin-bottom:4px;}
+.jpub{font-family:'DM Mono',monospace;font-size:11px;color:var(--blue);}
+
+/* TALKS */
+.titem{background:var(--card-bg);border-radius:12px;padding:16px 20px;border:1px solid var(--border);display:flex;align-items:flex-start;gap:16px;transition:transform .18s;margin-bottom:10px;cursor:pointer;}
+.titem:hover{transform:translateX(4px);}
+.ttype{font-family:'DM Mono',monospace;font-size:10px;background:var(--blue-light);color:var(--blue);padding:4px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:2px;}
+.ttype.panel{background:#fff0f8;color:#c0397a;}
+.ttype.judge{background:#fffbea;color:#b45309;}
+.ttype.keynote{background:#f0fff8;color:#1a6e3a;}
+.tbody .ttitle{font-size:14px;font-weight:600;color:var(--blue-dark);margin-bottom:3px;}
+.tbody .tmeta{font-size:12px;color:var(--muted);}
+
+/* MEMBERSHIP */
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.mitem{background:var(--card-bg);border-radius:12px;padding:14px 18px;border:1px solid var(--border);transition:transform .18s;}
+.mitem:hover{transform:translateY(-2px);}
+.mname{font-size:13px;font-weight:600;color:var(--blue-dark);margin-bottom:3px;}
+.mrole{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(10,26,60,.55);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:24px;}
+.modal-overlay.open{display:flex;}
+.modal{background:white;border-radius:20px;max-width:620px;width:100%;max-height:88vh;overflow-y:auto;padding:32px;animation:min .25s ease both;}
+@keyframes min{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.mcl{display:block;margin-bottom:16px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:5px 14px;font-size:12px;color:var(--muted);cursor:pointer;font-family:'DM Mono',monospace;width:fit-content;}
+.mcl:hover{color:var(--blue);border-color:var(--blue);}
+.mimg-placeholder{width:100%;height:220px;background:var(--blue-light);border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:11px;color:var(--blue);border:2px dashed #b5d4f4;margin-bottom:20px;}
+.mtitle{font-size:22px;font-weight:700;color:var(--blue-dark);margin-bottom:6px;}
+.msub{font-family:'DM Mono',monospace;font-size:11px;color:var(--blue);margin-bottom:16px;}
+.mbody{font-size:14px;color:#3c4a6e;line-height:1.7;margin-bottom:16px;}
+.mtags{display:flex;gap:6px;flex-wrap:wrap;}
+.mtag{font-size:11px;color:var(--blue);background:var(--blue-light);border-radius:20px;padding:4px 12px;font-weight:500;}
+
+/* ABOUT */
+.about-hero{padding:52px 0 32px;}
+.ah{font-size:clamp(36px,7vw,64px);font-weight:700;color:var(--blue-dark);letter-spacing:-2px;line-height:1;margin-bottom:16px;}
+.ah span{color:transparent;-webkit-text-stroke:2px var(--blue);}
+.aintro{font-size:16px;color:#3c4a6e;line-height:1.7;max-width:560px;margin-bottom:32px;}
+.photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:32px;}
+.photo-slot{border-radius:16px;overflow:hidden;background:var(--blue-light);border:2px dashed #b5d4f4;min-height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:11px;color:var(--blue);gap:8px;position:relative;}
+.photo-slot img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;border-radius:14px;}
+.photo-slot.tall{grid-row:span 2;min-height:540px;}
+.fact-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:32px;}
+.fact{background:var(--card-bg);border-radius:12px;padding:16px 18px;border:1px solid var(--border);}
+.flabel{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;}
+.fval{font-size:14px;font-weight:600;color:var(--blue-dark);}
+.text-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px;}
+.tcard{background:var(--card-bg);border-radius:16px;padding:22px;border:1px solid var(--border);}
+.tcard h3{font-size:11px;font-weight:600;color:var(--blue);font-family:'DM Mono',monospace;letter-spacing:.1em;margin-bottom:10px;text-transform:uppercase;}
+.tcard p{font-size:13px;color:#3c4a6e;line-height:1.7;}
+.connect{background:var(--blue-dark);border-radius:20px;padding:36px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px;}
+.conn-head{font-size:26px;font-weight:700;color:white;margin-bottom:6px;}
+.conn-sub{font-size:13px;color:#a0aec0;}
+.conn-btns{display:flex;gap:10px;flex-shrink:0;}
+.cbtn{padding:11px 22px;border-radius:10px;font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;border:none;display:inline-block;}
+.cbtn.p{background:var(--blue);color:white;}
+.cbtn.s{background:rgba(255,255,255,.1);color:white;border:1px solid rgba(255,255,255,.2);}
+.cbtn:hover{opacity:.9;}
+
+/* BLOG */
+.blog-header{padding:52px 0 32px;}
+.bh{font-size:clamp(36px,7vw,64px);font-weight:700;color:var(--blue-dark);letter-spacing:-2px;margin-bottom:8px;}
+.bh span{color:transparent;-webkit-text-stroke:2px var(--blue);}
+.bsub{font-size:13px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:32px;}
+.blog-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.blog-card{background:var(--card-bg);border-radius:16px;border:1px solid var(--border);overflow:hidden;cursor:pointer;transition:transform .18s,box-shadow .18s;text-decoration:none;display:block;}
+.blog-card:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(74,124,252,.12);}
+.bthumb{width:100%;aspect-ratio:16/9;background:var(--blue-light);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.bthumb img{width:100%;height:100%;object-fit:cover;}
+.bthumb-inner{display:flex;flex-direction:column;align-items:center;gap:8px;}
+.play-btn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.play-inner{width:48px;height:48px;background:white;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.2);}
+.play-inner svg{width:20px;height:20px;fill:var(--blue);margin-left:3px;}
+.bpill{position:absolute;top:10px;left:10px;font-family:'DM Mono',monospace;font-size:10px;font-weight:500;padding:4px 10px;border-radius:20px;}
+.bpill.video{background:var(--blue);color:white;}
+.bpill.article{background:var(--green);color:white;}
+.bpill.press{background:#8b2252;color:white;}
+.bbody{padding:18px 20px;}
+.bdate{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:6px;}
+.btitle{font-size:15px;font-weight:600;color:var(--blue-dark);margin-bottom:6px;line-height:1.3;}
+.bdesc{font-size:12px;color:var(--muted);line-height:1.5;}
+.blog-add{background:transparent;border:2px dashed #b5d4f4;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:180px;gap:8px;cursor:pointer;transition:background .18s;color:var(--blue);font-family:'DM Mono',monospace;font-size:12px;}
+.blog-add:hover{background:var(--blue-light);}
+
+/* YT MODAL */
+.yt-overlay{display:none;position:fixed;inset:0;z-index:600;background:rgba(10,26,60,.8);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:24px;}
+.yt-overlay.open{display:flex;}
+.yt-box{background:var(--blue-dark);border-radius:20px;max-width:760px;width:100%;padding:24px;}
+.yt-frame-wrap{width:100%;aspect-ratio:16/9;border-radius:12px;overflow:hidden;margin-bottom:16px;background:black;}
+.yt-frame-wrap iframe{width:100%;height:100%;border:none;}
+.yt-cl{background:rgba(255,255,255,.1);border:none;color:white;border-radius:8px;padding:6px 14px;font-family:'DM Mono',monospace;font-size:11px;cursor:pointer;}
+.yt-cl:hover{background:rgba(255,255,255,.2);}
+
+footer{position:relative;z-index:1;text-align:center;padding:48px 0 24px;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);}
+footer a{color:var(--blue);text-decoration:none;}
+
+@media(max-width:640px){
+  .g2,.g3,.mgrid,.award-grid,.photo-grid,.text-grid,.fact-grid,.blog-grid{grid-template-columns:1fr;}
+  .cwide,.connect{flex-direction:column;align-items:flex-start;}
+  .photo-slot.tall{min-height:260px;grid-row:span 1;}
+  nav{padding:0 16px;}
+  .nav-links a{padding:5px 8px;font-size:11px;}
+  .modal{padding:20px;}
+}
+</style>
+</head>
+<body>
+
+<!-- DOODLE BG -->
+<div class="doodle-bg">
+<svg viewBox="0 0 1200 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+  <pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="13" cy="13" r="1.1" fill="#c5d0f0" opacity=".55"/></pattern>
+  <rect width="1200" height="900" fill="url(#dots)"/>
+  <circle cx="1080" cy="110" r="52" fill="none" stroke="#4a7cfc" stroke-width="1.3" stroke-dasharray="6,5" opacity=".28"/>
+  <circle cx="1080" cy="110" r="8" fill="none" stroke="#4a7cfc" stroke-width="1.3" opacity=".38"/>
+  <circle cx="1080" cy="110" r="3" fill="#4a7cfc" opacity=".4"/>
+  <line x1="1016" y1="110" x2="998" y2="110" stroke="#4a7cfc" stroke-width="1" opacity=".25"/>
+  <line x1="1144" y1="110" x2="1162" y2="110" stroke="#4a7cfc" stroke-width="1" opacity=".25"/>
+  <line x1="1080" y1="46" x2="1080" y2="28" stroke="#4a7cfc" stroke-width="1" opacity=".25"/>
+  <line x1="1080" y1="174" x2="1080" y2="192" stroke="#4a7cfc" stroke-width="1" opacity=".25"/>
+  <g transform="translate(38,55) rotate(-4)" opacity=".2" stroke="#4a7cfc" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="0" y="28" width="72" height="56" rx="8"/>
+    <rect x="9" y="36" width="54" height="38" rx="5" fill="#e8eeff" stroke="#4a7cfc"/>
+    <rect x="16" y="60" width="40" height="6" rx="3" fill="#b5d4f4" stroke="none"/>
+    <rect x="18" y="53" width="36" height="6" rx="3" fill="#b5d4f4" stroke="none"/>
+    <rect x="20" y="46" width="32" height="6" rx="3" fill="#85b7eb" stroke="none"/>
+    <line x1="36" y1="28" x2="36" y2="18"/><circle cx="36" cy="14" r="5" fill="#e8eeff"/>
+    <text x="44" y="12" font-size="13" fill="#4a7cfc" stroke="none" font-family="sans-serif">✦</text>
+    <text x="56" y="6" font-size="8" fill="#4a7cfc" stroke="none" font-family="sans-serif" opacity=".6">✦</text>
+    <rect x="-5" y="84" width="82" height="8" rx="4" fill="#e8eeff"/>
+    <line x1="12" y1="92" x2="10" y2="104"/><line x1="62" y1="92" x2="64" y2="104"/>
+  </g>
+  <g transform="translate(1060,370)" opacity=".18" stroke="#4a7cfc" stroke-width="1.5" fill="none" stroke-linecap="round">
+    <path d="M0,0 Q22,-10 44,0 Q66,10 88,0"/><path d="M0,14 Q22,4 44,14 Q66,24 88,14"/>
+    <path d="M0,28 Q22,18 44,28 Q66,38 88,28"/><path d="M0,42 Q22,32 44,42 Q66,52 88,42"/>
+    <path d="M0,56 Q22,46 44,56 Q66,66 88,56"/><path d="M0,70 Q22,60 44,70 Q66,80 88,70"/>
+  </g>
+  <g transform="translate(44,668) rotate(8)" opacity=".17" stroke="#4a7cfc" stroke-width="1.3" fill="none" stroke-linecap="round">
+    <circle cx="28" cy="28" r="18"/><circle cx="28" cy="28" r="7"/>
+    <rect x="24" y="6" width="8" height="10" rx="4"/><rect x="24" y="40" width="8" height="10" rx="4"/>
+    <rect x="6" y="24" width="10" height="8" rx="4"/><rect x="40" y="24" width="10" height="8" rx="4"/>
+    <rect x="11" y="11" width="8" height="8" rx="2" transform="rotate(45,15,15)"/>
+    <rect x="37" y="11" width="8" height="8" rx="2" transform="rotate(45,41,15)"/>
+    <rect x="11" y="37" width="8" height="8" rx="2" transform="rotate(45,15,41)"/>
+    <rect x="37" y="37" width="8" height="8" rx="2" transform="rotate(45,41,41)"/>
+  </g>
+  <g transform="translate(18,435) rotate(3)" opacity=".17" stroke="#4a7cfc" stroke-width="1.3" fill="none" stroke-linecap="round">
+    <rect x="0" y="0" width="88" height="46" rx="12"/>
+    <polygon points="16,46 8,64 38,46" fill="#f0f3fb" stroke="#4a7cfc" stroke-linejoin="round"/>
+    <line x1="12" y1="16" x2="76" y2="16" opacity=".4"/><line x1="12" y1="28" x2="60" y2="28" opacity=".4"/>
+  </g>
+  <g transform="translate(1100,690) rotate(-6)" opacity=".16" stroke="#4a7cfc" stroke-width="1.3" fill="none" stroke-linecap="round">
+    <circle cx="44" cy="44" r="42"/><circle cx="44" cy="44" r="14"/><circle cx="44" cy="44" r="5"/>
+    <line x1="44" y1="2" x2="44" y2="30"/><line x1="44" y1="58" x2="44" y2="86"/>
+    <line x1="2" y1="44" x2="30" y2="44"/><line x1="58" y1="44" x2="86" y2="44"/>
+    <line x1="14" y1="14" x2="34" y2="34"/><line x1="54" y1="54" x2="74" y2="74"/>
+    <line x1="74" y1="14" x2="54" y2="34"/><line x1="34" y1="54" x2="14" y2="74"/>
+  </g>
+  <g transform="translate(510,16)" opacity=".12" stroke="#4a7cfc" stroke-width="1" fill="none">
+    <polygon points="20,0 40,12 40,34 20,46 0,34 0,12"/><polygon points="60,0 80,12 80,34 60,46 40,34 40,12"/>
+    <polygon points="40,22 60,34 60,56 40,68 20,56 20,34"/><polygon points="20,46 40,58 40,80 20,92 0,80 0,58"/>
+    <polygon points="60,46 80,58 80,80 60,92 40,80 40,58"/>
+  </g>
+  <circle cx="155" cy="790" r="28" fill="none" stroke="#4a7cfc" stroke-width="1" stroke-dasharray="4,4" opacity=".2"/>
+  <circle cx="155" cy="790" r="4" fill="none" stroke="#4a7cfc" stroke-width="1" opacity=".3"/>
+  <g opacity=".22" stroke="#4a7cfc" stroke-width="1.4" stroke-linecap="round">
+    <line x1="978" y1="238" x2="978" y2="252"/><line x1="971" y1="245" x2="985" y2="245"/>
+    <line x1="118" y1="338" x2="118" y2="352"/><line x1="111" y1="345" x2="125" y2="345"/>
+    <line x1="1148" y1="555" x2="1148" y2="569"/><line x1="1141" y1="562" x2="1155" y2="562"/>
+    <line x1="375" y1="818" x2="375" y2="832"/><line x1="368" y1="825" x2="382" y2="825"/>
+    <line x1="698" y1="755" x2="698" y2="769"/><line x1="691" y1="762" x2="705" y2="762"/>
+  </g>
+  <path d="M58 188 Q83 178 108 188 Q133 198 158 188 Q183 178 208 188" fill="none" stroke="#4a7cfc" stroke-width="1.8" stroke-linecap="round" opacity=".2"/>
+  <g transform="translate(1048,515)" opacity=".18" stroke="#4a7cfc" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M0,20 Q30,20 50,0"/><polyline points="40,0 50,0 50,10"/>
+  </g>
+</svg>
+</div>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-logo" onclick="showPage('home')">CA — portfolio</span>
+  <ul class="nav-links">
+    <li><a href="#" onclick="showPage('home');return false;" id="nav-home" class="active">Work</a></li>
+    <li><a href="#" onclick="showPage('about');return false;" id="nav-about">About</a></li>
+    <li><a href="#" onclick="showPage('blog');return false;" id="nav-blog">Blog</a></li>
+  </ul>
+</nav>
+
+<!-- ══ HOME ══ -->
+<div id="page-home" class="page active">
+<div class="wrap">
+
+  <section class="hero reveal visible">
+    <div class="hero-name">
+      <span class="first">CINERITA</span>
+      <span class="last">ANDRANDES</span>
+    </div>
+    <div class="hero-pill"><span class="dot"></span>ADDITIVE MFG ENGINEER · SPEAKER · NYU MS ME</div>
+
+    <div class="g2 reveal d1">
+      <div class="card blue clickable" onclick="openModal('m-robotics')">
+        <div class="eyebrow">2022 — 2024</div>
+        <div class="ctitle">NYU Robotics — NASA</div>
+        <div class="crole">Manufacturing Lead</div>
+        <div class="csub">Lunabotics Competition · Led team of 15 to manufacture extraterrestrial mining robot</div>
+        <div class="tags"><span class="tag">CAD</span><span class="tag">3D Print</span><span class="tag">Mfg. Lead</span><span class="tag">Systems Eng.</span></div>
+      </div>
+      <div class="card green clickable" onclick="openModal('m-makerspace')">
+        <div class="eyebrow">2023 — 2024</div>
+        <div class="ctitle">NYU MakerSpace</div>
+        <div class="crole">Graduate Assistant</div>
+        <div class="csub">10,000 sq ft lab · 3D printing, laser cutting, machining, 3D scanning, robotic arm</div>
+        <div class="tags"><span class="tag">UR16e arm</span><span class="tag">Artec Eva</span><span class="tag">Machining</span></div>
+      </div>
+    </div>
+
+    <div class="cwide reveal d2">
+      <div>
+        <div class="ew">Currently</div>
+        <div class="tw">Additive Manufacturing Engineer</div>
+        <div class="sw">FDM · SLA · Powder Bed Fusion · Giving talks + panels + workshops</div>
+      </div>
+      <div class="badge" onclick="showPage('about')">Get in touch →</div>
+    </div>
+
+    <div class="g3 reveal d3">
+      <div class="card"><div class="eyebrow">Education</div><div class="ctitle">NYU Tandon</div><div class="csub">MS Mechanical Engineering · 2024</div></div>
+      <div class="card pink-tint"><div class="eyebrow">Specialisation</div><div class="ctitle">Additive Mfg.</div><div class="csub">FDM · SLA · Powder Bed</div></div>
+      <div class="card amber-tint"><div class="eyebrow">Based in</div><div class="ctitle">New York, NY</div><div class="csub">ca2877@nyu.edu</div></div>
+    </div>
+  </section>
+
+  <!-- AWARDS -->
+  <section class="section reveal">
+    <div class="sh"><span class="sl">Awards</span><div class="sline"></div><span class="sn">01</span></div>
+    <div class="award-grid">
+
+      <div class="award-card gold" onclick="openModal('m-aw-nasa')">
+        <svg class="award-doodle" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="18" y="36" width="16" height="5" rx="2" stroke="#b45309" stroke-width="1.5" fill="#faeeda"/>
+          <rect x="14" y="41" width="24" height="5" rx="2" stroke="#b45309" stroke-width="1.5" fill="#faeeda"/>
+          <path d="M14 10 h24 v14 a12 12 0 0 1-24 0 Z" stroke="#b45309" stroke-width="1.5" fill="#fef3c7"/>
+          <path d="M14 14 Q8 14 8 22 Q8 28 14 28" stroke="#b45309" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M38 14 Q44 14 44 22 Q44 28 38 28" stroke="#b45309" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <text x="21" y="23" font-size="9" fill="#b45309" font-family="sans-serif" font-weight="700">NASA</text>
+          <text x="6" y="10" font-size="8" fill="#f59e0b" font-family="sans-serif">✦</text>
+          <text x="38" y="8" font-size="6" fill="#f59e0b" font-family="sans-serif">✦</text>
+          <text x="24" y="7" font-size="7" fill="#f59e0b" font-family="sans-serif">✦</text>
+        </svg>
+        <div class="award-card-title">NASA Leaps and Bounds Award</div>
+        <div class="award-card-sub">Systems Engineering · Lunabotics 2024 · Most progress since previous year</div>
+      </div>
+
+      <div class="award-card blue-t" onclick="openModal('m-aw-pmp')">
+        <svg class="award-doodle" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="6" width="28" height="36" rx="4" stroke="#185fa5" stroke-width="1.5" fill="#e8eeff"/>
+          <line x1="16" y1="16" x2="32" y2="16" stroke="#185fa5" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="16" y1="22" x2="32" y2="22" stroke="#185fa5" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="16" y1="28" x2="26" y2="28" stroke="#185fa5" stroke-width="1.2" stroke-linecap="round"/>
+          <circle cx="36" cy="38" r="10" fill="#4a7cfc" stroke="white" stroke-width="1.5"/>
+          <path d="M30 38 l4 4 l7-7" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+        <div class="award-card-title">100% on NASA Project Management Plan</div>
+        <div class="award-card-sub">Perfect score · Budget + schedule planning · Lunabotics 2024</div>
+      </div>
+
+      <div class="award-card green-t" onclick="openModal('m-aw-exhibit')">
+        <svg class="award-doodle" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="26" cy="22" r="14" stroke="#1a6e3a" stroke-width="1.5" fill="#f0fff8"/>
+          <circle cx="26" cy="22" r="9" stroke="#1a6e3a" stroke-width="1" fill="none" stroke-dasharray="3,2"/>
+          <text x="20" y="27" font-size="10" fill="#1a6e3a" font-family="sans-serif" font-weight="700">1st</text>
+          <path d="M20 36 l-5 10 l11-4" stroke="#1a6e3a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <path d="M32 36 l5 10 l-11-4" stroke="#1a6e3a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+        <div class="award-card-title">1st Place — NYU Research Excellence Exhibit</div>
+        <div class="award-card-sub">Vertically Integrated Projects category · NYU Tandon</div>
+      </div>
+
+      <div class="award-card pink-t" onclick="openModal('m-aw-add')">
+        <svg class="award-doodle" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="8" width="36" height="36" rx="8" stroke="#c0397a" stroke-width="1.5" fill="#fff5f8" stroke-dasharray="4,3"/>
+          <line x1="26" y1="18" x2="26" y2="34" stroke="#c0397a" stroke-width="2" stroke-linecap="round"/>
+          <line x1="18" y1="26" x2="34" y2="26" stroke="#c0397a" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <div class="award-card-title">Add your award here</div>
+        <div class="award-card-sub">Organisation · Year · Click to add details and a photo</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MEMBERSHIPS -->
+  <section class="section reveal">
+    <div class="sh"><span class="sl">Memberships</span><div class="sline"></div><span class="sn">02</span></div>
+    <div class="mgrid">
+      <div class="mitem"><div class="mname">NYU Robotics Design Team</div><div class="mrole">Manufacturing Lead · Systems Engineer · PM · 2022–2024</div></div>
+      <div class="mitem"><div class="mname">NYU MakerSpace</div><div class="mrole">Graduate Assistant · MakerGarage · 2023–2024</div></div>
+      <div class="mitem"><div class="mname">ASME</div><div class="mrole">Member — add year</div></div>
+      <div class="mitem"><div class="mname">Add Organisation</div><div class="mrole">Role · Year</div></div>
+    </div>
+  </section>
+
+  <!-- TALKS -->
+  <section class="section reveal">
+    <div class="sh"><span class="sl">Talks · Panels · Judging</span><div class="sline"></div><span class="sn">03</span></div>
+    <div class="titem" onclick="openModal('m-talk-ur16')">
+      <span class="ttype">Workshop</span>
+      <div class="tbody"><div class="ttitle">UR16e Robotic Arm Workshop</div><div class="tmeta">Guest Speaker · Dept. of Technology, Management and Innovation · NYU · 2024</div></div>
+    </div>
+    <div class="titem"><span class="ttype panel">Panel</span><div class="tbody"><div class="ttitle">Add your panel here</div><div class="tmeta">Conference / Event · Organisation · Year</div></div></div>
+    <div class="titem"><span class="ttype keynote">Keynote</span><div class="tbody"><div class="ttitle">Add your keynote / talk here</div><div class="tmeta">Event · Organisation · Year</div></div></div>
+    <div class="titem"><span class="ttype judge">Judge</span><div class="tbody"><div class="ttitle">Add judging role here</div><div class="tmeta">Competition / Hackathon · Organisation · Year</div></div></div>
+  </section>
+
+  <!-- PRESS -->
+  <section class="section reveal">
+    <div class="sh"><span class="sl">Press · Media · Features</span><div class="sline"></div><span class="sn">04</span></div>
+    <div class="press-list">
+      <div class="press-item"><div class="pdot"></div><div class="pbody"><div class="ptitle">NYU Students Show Off High Tech Inventions in Downtown BK</div><div class="pmeta">NYU Tandon · Feature article</div></div><div class="pdate">May 2024</div></div>
+      <div class="press-item"><div class="pdot"></div><div class="pbody"><div class="ptitle">What's it like to work at the MakerSpace?</div><div class="pmeta">NYU Tandon · Profile feature</div></div><div class="pdate">Mar 2024</div></div>
+      <div class="press-item"><div class="pdot" style="background:#c0397a;"></div><div class="pbody"><div class="ptitle">Add press / media feature here</div><div class="pmeta">Publication · Type of coverage</div></div><div class="pdate">Year</div></div>
+    </div>
+  </section>
+
+  <!-- SCHOLARLY -->
+  <section class="section reveal">
+    <div class="sh"><span class="sl">Scholarly Articles · Authorship</span><div class="sline"></div><span class="sn">05</span></div>
+    <div class="jitem"><div class="jtitle">Add your journal article or scholarly publication title here</div><div class="jauthors">Andrandes, C. et al.</div><div class="jpub">Journal Name · Vol. X · Year · DOI: xxx</div></div>
+    <div class="jitem"><div class="jtitle">Add your second publication here</div><div class="jauthors">Andrandes, C., Co-author, A.</div><div class="jpub">Conference Proceedings · Year</div></div>
+    <div class="jitem"><div class="jtitle">NASA Lunabotics Systems Engineering Paper</div><div class="jauthors">NYU Robotics Design Team · Andrandes, C. (contributor)</div><div class="jpub">NASA Lunabotics Competition · 2024</div></div>
+  </section>
+
+</div>
+<footer>Built by Cinerita Andrandes · <a href="mailto:ca2877@nyu.edu">ca2877@nyu.edu</a> · New York, NY</footer>
+</div>
+
+<!-- ══ ABOUT ══ -->
+<div id="page-about" class="page">
+<div class="wrap">
+  <div class="about-hero reveal">
+    <div class="ah">About <span>me.</span></div>
+    <!-- ✏️ EDIT: Replace with your own bio -->
+    <p class="aintro">I'm Cinerita — a mechanical engineer turned additive manufacturing specialist, speaker, and maker. I graduated from NYU Tandon with an MS in Mechanical Engineering in 2024. I love building things that didn't exist before, giving talks about how we make them, and finding the overlap between precision engineering and genuine creativity.</p>
+  </div>
+
+  <!-- PHOTO GRID — add your photos by replacing the placeholder divs -->
+  <div class="photo-grid reveal d1">
+    <div class="photo-slot tall">
+      <!-- ✏️ TO ADD PHOTO: <img src="your-photo.jpg" alt="Cinerita"> -->
+      <span style="font-size:22px;">✦</span>
+      <span style="font-size:11px;opacity:.6;">add your main photo here</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="photo-slot" style="flex:1;">
+        <span style="font-size:18px;">✦</span>
+        <span style="font-size:10px;opacity:.6;">speaking / at work</span>
+      </div>
+      <div class="photo-slot" style="flex:1;">
+        <span style="font-size:18px;">✦</span>
+        <span style="font-size:10px;opacity:.6;">lab / project photo</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="fact-grid reveal">
+    <div class="fact"><div class="flabel">Degree</div><div class="fval">MS Mech. Eng., NYU</div></div>
+    <div class="fact"><div class="flabel">Graduated</div><div class="fval">2024</div></div>
+    <div class="fact"><div class="flabel">Based in</div><div class="fval">New York, NY</div></div>
+    <div class="fact"><div class="flabel">Speciality</div><div class="fval">Additive Mfg.</div></div>
+    <div class="fact"><div class="flabel">Talks given</div><div class="fval">add number ✏️</div></div>
+    <div class="fact"><div class="flabel">Processes</div><div class="fval">FDM · SLA · PBF</div></div>
+  </div>
+
+  <div class="text-grid reveal d1">
+    <div class="tcard">
+      <h3>Background</h3>
+      <!-- ✏️ EDIT -->
+      <p>I've spent the last few years at the intersection of mechanical engineering and manufacturing — from building a NASA competition robot at NYU to managing a 10,000 sq ft makerspace. I'm drawn to projects where you can hold the output in your hands.</p>
+    </div>
+    <div class="tcard">
+      <h3>Beyond the lab</h3>
+      <!-- ✏️ EDIT -->
+      <p>Outside of engineering I give talks and sit on panels about additive manufacturing and the future of making things. I have blue hair. I think the best ideas come from people who refuse to stay in their lane.</p>
+    </div>
+    <div class="tcard">
+      <h3>What I'm looking for</h3>
+      <!-- ✏️ EDIT -->
+      <p>Speaking invitations, collaborative research, consulting on additive manufacturing projects, and connecting with people building interesting things.</p>
+    </div>
+    <div class="tcard">
+      <h3>Skills + tools</h3>
+      <!-- ✏️ EDIT -->
+      <p>SolidWorks · Fusion 360 · FDM · SLA · SLS · Powder Bed Fusion · Machining · UR16e robotic arm · Artec Eva 3D scanning · Project management · Technical writing</p>
+    </div>
+  </div>
+
+  <div class="connect reveal d2">
+    <div>
+      <div class="conn-head">Let's connect.</div>
+      <div class="conn-sub">Open to speaking invitations, collaborations, and new projects</div>
+    </div>
+    <div class="conn-btns">
+      <a class="cbtn p" href="mailto:ca2877@nyu.edu">Email me →</a>
+      <!-- ✏️ Replace # with your LinkedIn URL -->
+      <a class="cbtn s" href="#" target="_blank">LinkedIn →</a>
+    </div>
+  </div>
+</div>
+<footer>Built by Cinerita Andrandes · <a href="mailto:ca2877@nyu.edu">ca2877@nyu.edu</a> · New York, NY</footer>
+</div>
+
+<!-- ══ BLOG ══ -->
+<div id="page-blog" class="page">
+<div class="wrap">
+  <div class="blog-header reveal">
+    <div class="bh">Notes + <span>media.</span></div>
+    <div class="bsub">// talks · videos · articles · links · things worth sharing</div>
+  </div>
+
+  <div class="blog-grid reveal d1">
+
+    <!-- VIDEO CARD — paste your YouTube embed URL into openYT('...') -->
+    <div class="blog-card" onclick="openYT('https://www.youtube.com/embed/YOUR_VIDEO_ID')">
+      <!-- ✏️ Replace YOUR_VIDEO_ID with the ID from your YouTube URL -->
+      <div class="bthumb" style="background:#0a1a3c;">
+        <div class="bthumb-inner">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="white" opacity=".35"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+        </div>
+        <div class="play-btn"><div class="play-inner"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
+        <span class="bpill video">Video</span>
+      </div>
+      <div class="bbody">
+        <div class="bdate">Add date ✏️</div>
+        <div class="btitle">Add your YouTube video or talk title here ✏️</div>
+        <div class="bdesc">Short description of the talk or video — replace this text</div>
+      </div>
+    </div>
+
+    <!-- ARTICLE CARD -->
+    <div class="blog-card" onclick="window.open('https://your-article-url.com','_blank')">
+      <!-- ✏️ Replace the URL above with your article link -->
+      <div class="bthumb" style="background:#f0fff8;">
+        <div class="bthumb-inner">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1a6e3a" stroke-width="1.5" opacity=".5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </div>
+        <span class="bpill article">Article</span>
+      </div>
+      <div class="bbody">
+        <div class="bdate">Add date ✏️</div>
+        <div class="btitle">Add an article, blog post, or written piece here ✏️</div>
+        <div class="bdesc">Link to article, write-up, or external post</div>
+      </div>
+    </div>
+
+    <!-- PRESS CARD 1 -->
+    <div class="blog-card" onclick="window.open('#','_blank')">
+      <div class="bthumb" style="background:#e8eeff;">
+        <div class="bthumb-inner">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#4a7cfc" stroke-width="1.5" opacity=".5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+        <span class="bpill press">Press</span>
+      </div>
+      <div class="bbody">
+        <div class="bdate">May 2024</div>
+        <div class="btitle">NYU Students Show Off High Tech Inventions in Downtown BK</div>
+        <div class="bdesc">Featured in NYU Tandon press coverage of the Research Excellence Exhibit</div>
+      </div>
+    </div>
+
+    <!-- PRESS CARD 2 -->
+    <div class="blog-card" onclick="window.open('#','_blank')">
+      <div class="bthumb" style="background:#fff5f8;">
+        <div class="bthumb-inner">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#c0397a" stroke-width="1.5" opacity=".5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+        <span class="bpill press">Press</span>
+      </div>
+      <div class="bbody">
+        <div class="bdate">Mar 2024</div>
+        <div class="btitle">What's it like to work at the MakerSpace?</div>
+        <div class="bdesc">NYU Tandon profile feature on life and work at the MakerSpace</div>
+      </div>
+    </div>
+
+    <!-- ADD NEW CARD placeholder -->
+    <div class="blog-add">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4a7cfc" stroke-width="1.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <span>add video · article · link</span>
+      <span style="font-size:10px;opacity:.6;">duplicate a card above to add more</span>
+    </div>
+
+  </div>
+</div>
+<footer>Built by Cinerita Andrandes · <a href="mailto:ca2877@nyu.edu">ca2877@nyu.edu</a> · New York, NY</footer>
+</div>
+
+<!-- ══ MODALS ══ -->
+
+<div class="modal-overlay" id="m-robotics" onclick="bgClose(event,this)">
+  <div class="modal">
+    <button class="mcl" onclick="closeModal('m-robotics')">✕ close</button>
+    <!-- ✏️ Replace placeholder with: <img src="your-photo.jpg" style="width:100%;border-radius:12px;margin-bottom:20px;" alt="Lunabotics robot"> -->
+    <div class="mimg-placeholder">add a photo of the robot or your team here</div>
+    <div class="mtitle">NYU Robotics Design Team — NASA Lunabotics</div>
+    <div class="msub">Manufacturing Lead · Systems Engineer · Project Manager · 2022–2024</div>
+    <!-- ✏️ Edit description below -->
+    <div class="mbody">The NYU Robotics Design Team competed in NASA's annual Lunabotics Competition, designing and engineering an extraterrestrial mining robot. As Manufacturing Lead I led a team of 15 to manufacture the locomotion system — spoked wheels with 3D printed rims, steel spokes, hex shaft motor connections, and an aluminium box tube chassis. As Project Manager I managed a $40,500 budget across 60 team members spanning electrical, mechanical, and software. As Systems Engineer I ran design reviews and collaborated across teams to meet NASA requirements.</div>
+    <div class="mtags"><span class="mtag">CAD / SolidWorks</span><span class="mtag">3D Printing</span><span class="mtag">Machining</span><span class="mtag">NASA</span><span class="mtag">Project Management</span><span class="mtag">Systems Engineering</span></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="m-makerspace" onclick="bgClose(event,this)">
+  <div class="modal">
+    <button class="mcl" onclick="closeModal('m-makerspace')">✕ close</button>
+    <div class="mimg-placeholder">add a photo of the makerspace or equipment here</div>
+    <div class="mtitle">NYU Tandon MakerSpace</div>
+    <div class="msub">Graduate Assistant · MakerGarage · 2023–2024</div>
+    <div class="mbody">The NYU Tandon MakerSpace is a 10,000 sq ft cutting-edge lab at the intersection of technology, creativity, and innovation. As Graduate Assistant for the MakerGarage I managed the space, maintained 3D printers, laser cutters, and 3D scanners, and trained students to use machines safely. Key projects included setting up the UR16e robotic arm programme, learning and documenting the Einscan SE and Artec Eva 3D scanners, and leading a team of 3 to assemble the Marathon Systems 52f spray booth.</div>
+    <div class="mtags"><span class="mtag">UR16e Robotic Arm</span><span class="mtag">Artec Eva</span><span class="mtag">3D Printing</span><span class="mtag">Machining</span><span class="mtag">Training</span></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="m-aw-nasa" onclick="bgClose(event,this)">
+  <div class="modal">
+    <button class="mcl" onclick="closeModal('m-aw-nasa')">✕ close</button>
+    <div class="mimg-placeholder">add photo of the award plaque here</div>
+    <div class="mtitle">NASA Leaps and Bounds Award</div>
+    <div class="msub">NASA Lunabotics 2024 · Systems Engineering Award</div>
+    <div class="mbody">Presented to New York University at the NASA Lunabotics 2024 competition. The Leaps and Bounds award is given to the team that demonstrated the most significant progress since the previous year. NASA also requires every team to submit a systems engineering paper detailing the planning, design and construction of the robot.</div>
+    <div class="mtags"><span class="mtag">NASA</span><span class="mtag">2024</span><span class="mtag">Systems Engineering</span></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="m-aw-pmp" onclick="bgClose(event,this)">
+  <div class="modal">
+    <button class="mcl" onclick="closeModal('m-aw-pmp')">✕ close</button>
+    <div class="mimg-placeholder">add photo of your PMP presentation or team here</div>
+    <div class="mtitle">100% on NASA Project Management Plan</div>
+    <div class="msub">NASA Lunabotics 2024</div>
+    <div class="mbody">As project manager I authored the Project Management Plan required by NASA before the start of the competition. This included budget estimation, schedule planning, and risk management across three competencies and 60 team members. The plan was submitted to NASA and received a perfect 100% grade.</div>
+    <div class="mtags"><span class="mtag">NASA</span><span class="mtag">100%</span><span class="mtag">Project Management</span></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="m-aw-exhibit" onclick="bgClose(event,this)">
+  <div class="modal">
+    <button class="mcl" onclick="closeModal('m-aw-exhibit')">✕ close</button>
+    <div class="mimg-placeholder">add photo from the research exhibit here</div>
+    <div class="mtitle">1st Place — NYU Research Excellence Exhibit</div>
+    <div class="msub">Vertically Integrated Projects Category · NYU Tandon</div>
+    <div class="mbody">The robot was presented at the NYU Tandon Research Excellence Exhibit, where the team displayed their research efforts in designing, engineering, and manufacturing the Lunabotics mining robot. A first place award was presented to the team under the vertically integrated projects category.</div>
+    <div class="mtags"><span class="mtag">1st Place</span><span class="mtag">NYU Tandon</span><span class="mtag">Research</span></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="m-aw-add" onclick="bgClose(event,this)">
+  <div class="modal">
+    <button class="mcl" onclick="closeModal('m-aw-add')">✕ close</button>
+    <div class="mimg-placeholder">add a photo of your award here ✏️</div>
+    <div class="mtitle">Your Award Title Here ✏️</div>
+    <div class="msub">Organisation · Year</div>
+    <div class="mbody">Describe your award here. What was it for? What did you do to earn it? Add as much context as you like — this is your space to tell the story behind the recognition.</div>
+    <div class="mtags"><span class="mtag">Tag 1</span><span class="mtag">Tag 2</span></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="m-talk-ur16" onclick="bgClose(event,this)">
+  <div class="modal">
+    <button class="mcl" onclick="closeModal('m-talk-ur16')">✕ close</button>
+    <div class="mimg-placeholder">add photo from the workshop here</div>
+    <div class="mtitle">UR16e Robotic Arm Workshop</div>
+    <div class="msub">Guest Speaker · Dept. of Technology, Management and Innovation · NYU · 2024</div>
+    <div class="mbody">A UR16e Robotic Arm Workshop held by the department of Technology, Management and Innovation, aimed at creating interest in robotics among students. As guest speaker I shared knowledge about the arm, answered questions, and helped students understand that operating a robotic arm is more accessible than they expected.</div>
+    <div class="mtags"><span class="mtag">Workshop</span><span class="mtag">Robotics</span><span class="mtag">UR16e</span><span class="mtag">NYU 2024</span></div>
+  </div>
+</div>
+
+<!-- YT MODAL -->
+<div class="yt-overlay" id="yt-modal" onclick="ytBgClose(event)">
+  <div class="yt-box">
+    <div class="yt-frame-wrap"><iframe id="yt-frame" src="" allowfullscreen></iframe></div>
+    <button class="yt-cl" onclick="closeYT()">✕ close video</button>
+  </div>
+</div>
+
+<script>
+// PAGE NAV
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.getElementById('nav-'+name).classList.add('active');
+  window.scrollTo(0,0);
+  setTimeout(()=>{
+    document.querySelectorAll('#page-'+name+' .reveal').forEach((el,i)=>{
+      setTimeout(()=>el.classList.add('visible'),i*70);
+    });
+  },40);
+}
+
+// SCROLL REVEAL
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
+},{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// MODALS
+function openModal(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden';}
+function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow='';}
+function bgClose(e,el){if(e.target===el){el.classList.remove('open');document.body.style.overflow='';}}
+
+// YT
+function openYT(url){
+  if(!url||url.includes('YOUR_VIDEO_ID'))return alert('Add your YouTube video ID first — see the ✏️ comment in the blog card HTML');
+  document.getElementById('yt-frame').src=url+'?autoplay=1';
+  document.getElementById('yt-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeYT(){document.getElementById('yt-frame').src='';document.getElementById('yt-modal').classList.remove('open');document.body.style.overflow='';}
+function ytBgClose(e){if(e.target===document.getElementById('yt-modal'))closeYT();}
+
+// ESC key
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    document.querySelectorAll('.modal-overlay.open').forEach(m=>{m.classList.remove('open');document.body.style.overflow='';});
+    closeYT();
+  }
+});
+</script>
+</body>
+</html>
